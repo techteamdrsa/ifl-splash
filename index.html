@@ -53,8 +53,8 @@ function waitForAppToWakeUp() {
             })
             .catch(() => {
                 attempts++;
-                status.textContent = "Waking up the server… (attempt " + attempts + ")";
-                if (attempts >= 20) {
+                status.textContent = "Redirecting you shortly... (attempt " + attempts + ")";
+                if (attempts >= 40) {
                     clearInterval(interval);
                     status.textContent = "Something went wrong. Please try again later.";
                 }
