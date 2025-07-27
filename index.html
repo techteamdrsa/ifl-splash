@@ -30,12 +30,39 @@
     <h2>Request for Interest Free Loan Extension Form…</h2>
     <p>Please wait a few seconds while we start the application.</p>
     <div class="spinner"></div>
-    <p>Redirecting you shortly...</p>
+	<p id="status">Redirecting you shortly...</p>
 
     <script>
-        setTimeout(() => {
-            window.location.href = "https://ifl-consent-form.onrender.com";
-        }, 7000);
-    </script>
+const targetUrl = "https://ifl-consent-form.onrender.com";
+const pingUrl = targetUrl + "/ping";
+
+function waitForAppToWakeUp() {
+    const status = document.getElementById("status");
+
+    let attempts = 0;
+    const interval = setInterval(() => {
+        fetch(pingUrl)
+            .then(response => {
+                if (response.ok) {
+                    clearInterval(interval);
+                    status.textContent = "App is ready! Redirecting…";
+                    setTimeout(() => {
+                        window.location.href = targetUrl;
+                    }, 1000); // short buffer after backend wakes up
+                }
+            })
+            .catch(() => {
+                attempts++;
+                status.textContent = "Waking up the server… (attempt " + attempts + ")";
+                if (attempts >= 20) {
+                    clearInterval(interval);
+                    status.textContent = "Something went wrong. Please try again later.";
+                }
+            });
+    }, 1000); // try every 1 second
+}
+
+waitForAppToWakeUp();
+</script>
 </body>
 </html>
